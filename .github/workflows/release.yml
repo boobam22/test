@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: debug
-      run: echo "$GITHUB_REF_NAME"
     - name: checkout
       uses: actions/checkout@v4
 
@@ -21,13 +19,8 @@ jobs:
         chmod u+x ./build.sh
         ./build.sh
 
-    # - name: changelog
-    #   run: |
-    #     changelog=$(git log --oneline $(git describe --tags --abbrev=0)..HEAD)
-    #     echo "Changelog for this release:"
-    #     echo "$changelog"
+    - name: changelog
+      run: sed -n "/^## \[$GITHUB_REF_NAME\]/,/^##/p" CHANGELOG.md | head -n -1 > changelog.txt
 
-    # - name: release
-    #   uses: softprops/action-gh-release@v2
-    #   with:
-    #     files: dist/github-api.pyz
+    - name: release
+      run: gh release create $GITHUB_REF_NAME --note-file changelog.txt dist/github-api.pyz
