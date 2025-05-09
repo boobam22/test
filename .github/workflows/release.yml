@@ -1,0 +1,36 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: debug
+      run: export
+    - name: checkout
+      uses: actions/checkout@v4
+
+    - name: build
+      run: |
+        chmod u+x ./build.sh
+        ./build.sh
+
+    # - name: changelog
+    #   run: |
+    #     changelog=$(git log --oneline $(git describe --tags --abbrev=0)..HEAD)
+    #     echo "Changelog for this release:"
+    #     echo "$changelog"
+
+    # - name: release
+    #   uses: softprops/action-gh-release@v2
+    #   with:
+    #     files: dist/github-api.pyz
