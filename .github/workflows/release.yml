@@ -10,6 +10,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
     - name: checkout
       uses: actions/checkout@v4
@@ -19,8 +22,9 @@ jobs:
         chmod u+x ./build.sh
         ./build.sh
 
-    - name: changelog
-      run: sed -n "/^## \[$GITHUB_REF_NAME\]/,/^##/p" CHANGELOG.md | head -n -1 > changelog.txt
-
     - name: release
-      run: gh release create $GITHUB_REF_NAME --notes-file changelog.txt dist/github-api.pyz
+      run: |
+        sed -n "/^## \[$GITHUB_REF_NAME\]/,/^##/p" CHANGELOG.md | head -n -1 > changelog.txt
+        gh release create $GITHUB_REF_NAME --notes-file changelog.txt dist/*
+      env:
+        GH_TOKEN: ${{ github.token }}
