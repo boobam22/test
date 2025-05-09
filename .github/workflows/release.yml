@@ -23,4 +23,4 @@ jobs:
       run: sed -n "/^## \[$GITHUB_REF_NAME\]/,/^##/p" CHANGELOG.md | head -n -1 > changelog.txt
 
     - name: release
-      run: gh release create $GITHUB_REF_NAME --note-file changelog.txt dist/github-api.pyz
+      run: gh release create $GITHUB_REF_NAME --notes-file changelog.txt dist/github-api.pyz
